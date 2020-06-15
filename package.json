@@ -1,0 +1,29 @@
+{
+  "name": "pocket_gita",
+  "version": "1.0.0",
+  "description": "Bhagavat Gita & Shrimad Bhagavatam in your pocket",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/breakeneck/gitaparser.git"
+  },
+  "keywords": [
+    "gita"
+  ],
+  "author": "Yuri Datsenko",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/breakeneck/gitaparser/issues"
+  },
+  "homepage": "https://github.com/breakeneck/gitaparser#readme",
+  "dependencies": {
+    "better-sqlite3": "^7.1.0"
+  },
+  "devDependencies": {
+    "axios": "^0.19.2",
+    "cheerio": "^1.0.0-rc.3"
+  }
+}

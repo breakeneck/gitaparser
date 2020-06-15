@@ -1,20 +1,28 @@
-const sqlite3 = require("sqlite3").verbose();
-const
+const sqlite3 = require("better-sqlite3");
+let db = new sqlite3('sb_rus.db', { verbose: console.log });
 
-(async () => {
-    try {
-        // Creating the Books table (Book_ID, Title, Author, Comments)
-        const sql_create = `CREATE TABLE IF NOT EXISTS books ... `;
-        await db.query(sql_create, []);
-        console.log("Successful creation of the 'Books' table");
-        // Database seeding
-        const result = await db.query("SELECT COUNT(*) AS count FROM Books", []);
-        const count = result.rows[0].count;
-        if (count === 0) {
-            const sql_insert = `INSERT INTO Books ... `;
-            await db.query(sql_insert, []);
-            console.log("Successful creation of 3 books");
-        }
+const sql = require('./sql');
+
+let baseUri = '';
+
+let insertCategory = async (url, title) => {
+    let path = url.substr(url.indexOf(baseUri) + baseUri.length);
+
+    await db.prepare(sql.INSERT_CONTENT).run({
+        path,
+        title
+    });
+}
+
+module.exports.setBaseUri = (name) => baseUri = name;
+
+module.exports.insertCategories = async (items) => {
+    for (let item of items) {
+        await insertCategory(item.url, item.title)
     }
-    catch (error) { throw error; }
-})();
+}
+
+module.exports.createTables = () => db.exec(sql.CREATE_CATEGORIES + sql.CREATE_CONTENT);
+
+module.exports.updateCategoriesLevel = () => db.exec(sql.UPDATE_CATEGORIES_LEVEL);
+

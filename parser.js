@@ -1,4 +1,3 @@
-const util = require('util')
 const axios = require('axios');
 const cheerio = require('cheerio')
 cheerio.prototype[Symbol.iterator] = function* () {
@@ -13,20 +12,19 @@ cheerio.prototype.entries = function* () {
     }
 };
 
+const c = require('./constants');
+const db = require("./db");
+const sql = require('./sql');
 
-const URL = 'http://gitabase.com';
-const LANG = 'rus';
-const BOOK = 'SB';
 
-let $ = null;
 
 async function getPage(uri = '') {
-    let url = uri ? (uri.indexOf('http://') > -1 ? uri : `${URL}${uri}`) : `${URL}/${LANG}/${BOOK}`;
+    let url = uri ? (uri.indexOf('http://') > -1 ? uri : `${c.URL}${uri}`) : `${c.URL}/${c.LANG}/${c.BOOK}`;
     let page = await axios.get(url);
     return cheerio.load(page.data);
 }
 
-async function getLinks(url = '', regexp = /(.*)/) {
+async function parseLinks(url = '', regexp = /(.*)/, limit = 0) {
     let $ = await getPage(url);
 
     let items = [];
@@ -35,7 +33,9 @@ async function getLinks(url = '', regexp = /(.*)/) {
             url: linkTag.attribs.href,
             title: linkTag.children[0].data.match(regexp)[1]
         });
-        break;
+        if (limit && items.length >= limit) {
+            break;
+        }
     }
 
     return items;
@@ -69,15 +69,20 @@ async function getShlokas(links) {
 
 
 (async () => {
-    let cantos = await getLinks('', /«(.*)»/);
+    db.setBaseUri(`/${c.LANG}/${c.BOOK}/`);
+
+    let cantos = await parseLinks('', /«(.*)»/);
+    await db.insertCategories(cantos);
 
     for (let canto of cantos) {
-        canto.chapters = await getLinks(canto.url, /\d*(.*)/);
-        for (let chapter of canto.chapters) {
-            let links = await getLinks(chapter.url);
-            chapter.shlokas = await getShlokas(links);
+        let chapters = await parseLinks(canto.url, /\d*(.*)/);
+        await db.insertCategories(chapters);
+
+        for (let chapter of chapters) {
+            let texts = await parseLinks(chapter.url, /(.*)/);
+            await db.insertCategories(texts);
         }
     }
 
-    console.log(JSON.stringify(cantos, null, 2));
+    db.updateCategoriesLevel();
 }) ();
