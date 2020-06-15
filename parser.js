@@ -13,7 +13,7 @@ cheerio.prototype.entries = function* () {
 };
 
 const c = require('./constants');
-const db = require("./db");
+const storage = require("./storage");
 const sql = require('./sql');
 
 
@@ -41,48 +41,58 @@ async function parseLinks(url = '', regexp = /(.*)/, limit = 0) {
     return items;
 }
 
-async function parseShloka(uri) {
+async function parseText(path) {
+    let uri = `${c.URL}/${c.LANG}/${c.BOOK}/${path}`;
     let $ = await getPage(uri);
     let sanskrit = $('blockquote').text().trim();
     return {
-        uri: uri,
-        sanskrit: sanskrit,
+        path,
+        sanskrit,
         wordly: sanskrit
             ? $('blockquote').closest('.row').next().find('.dia_text p').text().trim()
             : '',
-        text: $('.col-md-12 h4').text().trim(),
+        txt: $('.col-md-12 h4').text().trim(),
         comment: sanskrit
              ? $('.dia_text .dia_text').text().trim()
              : $('.pager').next().find('.dia_text').text().trim()
     };
 }
 
-async function getShlokas(links) {
-    let result = [];
-    for (let link of links) {
-        let shloka = await parseShloka(link.url);
-        result.push(shloka);
+let parseCategories = async () => {
+    storage.setBaseUri(`/${c.LANG}/${c.BOOK}/`);
+
+    let cantos = await parseLinks('', /«(.*)»/);
+    await storage.insertCategories(cantos);
+
+    for (let canto of cantos) {
+        let chapters = await parseLinks(canto.url, /\d*(.*)/);
+        await storage.insertCategories(chapters);
+
+        for (let chapter of chapters) {
+            let texts = await parseLinks(chapter.url, /(.*)/);
+            await storage.insertCategories(texts);
+        }
     }
-    return result;
-    // return await links.map(async (link) => await parseShloka(link.url))
+
+    storage.db.exec(sql.UPDATE_CATEGORIES_LEVEL);
+}
+
+
+let parseTexts = async () => {
+    let i = 0;
+    let categories = storage.db.prepare(sql.SELECT_ALL_TEXTS).all();
+
+    for (let category of categories) {
+        let content = await parseText(category.path);
+        console.log(`Inserting ${category.path} ${Math.round(i/categories.length * 100)}%`);
+        await storage.db.prepare(sql.INSERT_CONTENT).run(content);
+        i++;
+    }
 }
 
 
 (async () => {
-    db.setBaseUri(`/${c.LANG}/${c.BOOK}/`);
-
-    let cantos = await parseLinks('', /«(.*)»/);
-    await db.insertCategories(cantos);
-
-    for (let canto of cantos) {
-        let chapters = await parseLinks(canto.url, /\d*(.*)/);
-        await db.insertCategories(chapters);
-
-        for (let chapter of chapters) {
-            let texts = await parseLinks(chapter.url, /(.*)/);
-            await db.insertCategories(texts);
-        }
-    }
-
-    db.updateCategoriesLevel();
+    // await storage.db.exec(sql.CREATE_CATEGORIES + sql.CREATE_CONTENT)
+    // await parseCategories();
+    await parseTexts();
 }) ();

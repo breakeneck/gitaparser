@@ -1,5 +1,5 @@
 const sqlite3 = require("better-sqlite3");
-let db = new sqlite3('sb_rus.db', { verbose: console.log });
+let db = new sqlite3('sb_rus.db'/*, { verbose: console.log }*/);
 
 const sql = require('./sql');
 
@@ -8,7 +8,7 @@ let baseUri = '';
 let insertCategory = async (url, title) => {
     let path = url.substr(url.indexOf(baseUri) + baseUri.length);
 
-    await db.prepare(sql.INSERT_CONTENT).run({
+    await db.prepare(sql.INSERT_CATEGORY).run({
         path,
         title
     });
@@ -22,7 +22,7 @@ module.exports.insertCategories = async (items) => {
     }
 }
 
-module.exports.createTables = () => db.exec(sql.CREATE_CATEGORIES + sql.CREATE_CONTENT);
-
-module.exports.updateCategoriesLevel = () => db.exec(sql.UPDATE_CATEGORIES_LEVEL);
+module.exports.db = db;
+// module.exports.iterateCategories = ;
+// module.exports.iterateCategories = db.prepare(sql.SELECT_ALL_TEXTS, (err, categories) => console.log(categories.length));
 
