@@ -1,5 +1,5 @@
 const sqlite3 = require("better-sqlite3");
-let db = new sqlite3('sb_rus.db'/*, { verbose: console.log }*/);
+let db = new sqlite3('gitabase.db'/*, { verbose: console.log }*/);
 
 const sql = require('./sql');
 

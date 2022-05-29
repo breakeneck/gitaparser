@@ -7,16 +7,20 @@ module.exports = {
      "sanskrit" TEXT,
      "wordly" TEXT,
      "txt" TEXT,
-     "comment" TEXT
+     "comment" TEXT,
+     "book" TEXT,
+     "lang" TEXT
     );`,
     CREATE_CATEGORIES: `CREATE TABLE IF NOT EXISTS categories (
      "id" INTEGER PRIMARY KEY AUTOINCREMENT,
      "level" INTEGER,
      "path" INTEGER,
-     "title" TEXT
+     "title" TEXT,
+     "book" TEXT,
+     "lang" TEXT
     );`,
-    INSERT_CONTENT: `INSERT INTO content (path, sanskrit, wordly, txt, comment) VALUES ($path, $sanskrit, $wordly, $txt, $comment)`,
-    INSERT_CATEGORY: `INSERT INTO categories (path, title) VALUES ($path, $title)`,
+    INSERT_CONTENT: `INSERT INTO content (path, sanskrit, wordly, txt, comment, book, lang) VALUES ($path, $sanskrit, $wordly, $txt, $comment, $book, $lang)`,
+    INSERT_CATEGORY: `INSERT INTO categories (path, title, book, lang) VALUES ($path, $title, $book, $lang)`,
     UPDATE_CATEGORIES_LEVEL: `UPDATE categories SET level = LENGTH(path) - LENGTH(REPLACE(path, '/', ''))`,
     SELECT_ALL_TEXTS: `SELECT * FROM categories WHERE level = ${c.LEVEL_TEXT}`,
     SELECT_CATEGORIES: `SELECT * FROM categories WHERE level = $level`,

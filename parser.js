@@ -91,8 +91,17 @@ let parseTexts = async () => {
 }
 
 
-(async () => {
-    // await storage.db.exec(sql.CREATE_CATEGORIES + sql.CREATE_CONTENT)
-    // await parseCategories();
-    await parseTexts();
-}) ();
+// (async () => {
+//     await storage.db.exec(sql.CREATE_CATEGORIES + sql.CREATE_CONTENT)
+//     await parseCategories();
+//     await parseTexts();
+// }) ();
+
+
+
+const STAGES = {'0': 'init database', '1': 'parsing categories', '2': 'parsing content'};
+const [LANG, BOOK, STAGE] = process.argv.slice(2);
+
+console.log('Parser require 1 or 3 arguments: stage (0, 1, 2) book (SB, BG, CC), lang (rus, ukr, eng). Stages are: ', STAGES);
+console.log(`Started ${STAGES[STAGE]} ` + (STAGE ? `${BOOK} for language ${LANG}` : ``));
+
