@@ -19,7 +19,7 @@ const sql = require('./sql');
 
 
 async function getPage(uri = '') {
-    let url = uri ? (uri.indexOf('http://') > -1 ? uri : `${c.URL}${uri}`) : `${c.URL}/${c.LANG}/${c.BOOK}`;
+    let url = uri ? (uri.indexOf('http://') > -1 ? uri : `${c.URL}${uri}`) : `${c.URL}/${LANG}/${BOOK}`;
     let page = await axios.get(url);
     return cheerio.load(page.data);
 }
@@ -42,7 +42,7 @@ async function parseLinks(url = '', regexp = /(.*)/, limit = 0) {
 }
 
 async function parseText(path) {
-    let uri = `${c.URL}/${c.LANG}/${c.BOOK}/${path}`;
+    let uri = `${c.URL}/${LANG}/${BOOK}/${path}`;
     let $ = await getPage(uri);
     let sanskrit = $('blockquote').text().trim();
     return {
@@ -54,12 +54,14 @@ async function parseText(path) {
         txt: $('.col-md-12 h4').text().trim(),
         comment: sanskrit
              ? $('.dia_text .dia_text').text().trim()
-             : $('.pager').next().find('.dia_text').text().trim()
+             : $('.pager').next().find('.dia_text').text().trim(),
+        book: BOOK,
+        lang: LANG
     };
 }
 
 let parseCategories = async () => {
-    storage.setBaseUri(`/${c.LANG}/${c.BOOK}/`);
+    storage.setBaseUri(`/${LANG}/${BOOK}/`);
 
     let cantos = await parseLinks('', /«(.*)»/);
     await storage.insertCategories(cantos);

@@ -10,7 +10,9 @@ let insertCategory = async (url, title) => {
 
     await db.prepare(sql.INSERT_CATEGORY).run({
         path,
-        title
+        title,
+        BOOK,
+        LANG
     });
 }
 
