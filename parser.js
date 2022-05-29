@@ -20,6 +20,9 @@ const sql = require('./sql');
 
 async function getPage(uri = '') {
     let url = uri ? (uri.indexOf('http://') > -1 ? uri : `${c.URL}${uri}`) : `${c.URL}/${LANG}/${BOOK}`;
+
+    console.log(`Loading page ${url}`);
+
     let page = await axios.get(url);
     return cheerio.load(page.data);
 }
