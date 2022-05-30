@@ -1,30 +1,39 @@
 const axios = require('axios');
 const cheerio = require('cheerio')
+const sqlite3 = require("better-sqlite3");
+const fs = require('fs');
 
 const c = require('./constants');
-const storage = require("./storage");
 const sql = require('./sql');
 
 let baseUri = '';
+
+let db = null;
+let getDb = function () {
+    if (! db) {
+        db = new sqlite3('./' + c.DB_FILENAME);
+    }
+    return db;
+}
 
 let parseBookStructure = async () => {
     baseUri = `/${LANG}/${BOOK}/`;
 
     // let cantos = await parseLinks('', /«(.*)»/); SB rus version only
-    let cantos = await parseChapters('', /(.*)/);
+    let cantos = await parseChapters('', /(.*)/, 0);
 
     for (let cantoUrl of cantos) {
-        let chapters = await parseChapters(cantoUrl, /\d*(.*)/);
+        let chapters = await parseChapters(cantoUrl, /\d*(.*)/, 1);
 
         for (let chapterUrl of chapters) {
-            let texts = await parseChapters(chapterUrl, /(.*)/);
+            let texts = await parseChapters(chapterUrl, /(.*)/, 2);
         }
     }
 
-    storage.db.exec(sql.UPDATE_CATEGORIES_LEVEL);
+    getDb().exec(sql.UPDATE_CATEGORIES_LEVEL);
 }
 
-async function parseChapters(url = '', regexp = /(.*)/, limit = 0) {
+async function parseChapters(url = '', regexp = /(.*)/, level) {
     let $ = await getPage(url);
 
     console.log('Parsing ', url);
@@ -32,16 +41,17 @@ async function parseChapters(url = '', regexp = /(.*)/, limit = 0) {
     let urls = [];
     for (let linkTag of $('.col-md-12 a')) {
         $linkTag = $(linkTag);
-        await db.prepare(sql.INSERT_CATEGORY).run({
+        await getDb().prepare(sql.INSERT_CATEGORY).run({
             path: url.substr(url.indexOf(baseUri) + baseUri.length),
             title: $linkTag.text().match(regexp)[1],
+            level: level,
             book: BOOK,
             lang: LANG
         });
         urls.push($linkTag.attr('href'));
-        if (limit && urls.length >= limit) {
-            break;
-        }
+        // if (limit && urls.length >= limit) {
+        //     break;
+        // }
     }
 
     return urls;
@@ -50,16 +60,15 @@ async function parseChapters(url = '', regexp = /(.*)/, limit = 0) {
 
 let parseBookContent = async () => {
     let i = 0;
-    let categories = storage.db.prepare(sql.SELECT_ALL_TEXTS).all({book: BOOK,lang: LANG});
-    // console.log(categories);
+    let categories = getDb().prepare(sql.SELECT_CHAPTERS).all({level: 2, book: BOOK,lang: LANG});
+    console.log(categories);
 
     for (let category of categories) {
-        console.log(category.path);
         try {
             console.log(`Inserting ${category.path} ${Math.round(i/categories.length * 100)}%`);
 
             let content = await parsePage(category.path);
-            await storage.db.prepare(sql.INSERT_CONTENT).run(content);
+            await getDb().prepare(sql.INSERT_CONTENT).run(content);
             i++;
         } catch (error) {
             console.error(error);
@@ -104,8 +113,8 @@ console.log('Parser require 1 or 3 arguments: stage (1, 2, 3) book (SB, BG, CC),
     switch (parseInt(STAGE)) {
         case 1:
             console.log(`Started db init`);
-            // await storage.removeDb();
-            await storage.db.exec(sql.CREATE_CATEGORIES + sql.CREATE_CONTENT);
+            fs.unlinkSync('./' + c.DB_FILENAME);
+            await getDb().exec(sql.CREATE_CATEGORIES + sql.CREATE_CONTENT);
             break;
         case 2:
             console.log(`Started parsing categories for ${BOOK} [${LANG}]`);

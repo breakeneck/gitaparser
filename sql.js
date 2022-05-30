@@ -20,8 +20,7 @@ module.exports = {
      "lang" TEXT
     );`,
     INSERT_CONTENT: `INSERT INTO content (path, sanskrit, wordly, txt, comment, book, lang) VALUES ($path, $sanskrit, $wordly, $txt, $comment, $book, $lang)`,
-    INSERT_CATEGORY: `INSERT INTO categories (path, title, book, lang) VALUES ($path, $title, $book, $lang)`,
+    INSERT_CATEGORY: `INSERT INTO categories (path, title, level, book, lang) VALUES ($path, $title, $level, $book, $lang)`,
     UPDATE_CATEGORIES_LEVEL: `UPDATE categories SET level = LENGTH(path) - LENGTH(REPLACE(path, '/', ''))`,
-    SELECT_ALL_TEXTS: `SELECT * FROM categories WHERE level = ${c.LEVEL_TEXT} AND book = $book AND lang = $lang`,
-    SELECT_CATEGORIES: `SELECT * FROM categories WHERE level = $level`,
+    SELECT_CHAPTERS: `SELECT * FROM categories WHERE level = $level AND book = $book AND lang = $lang`,
 };

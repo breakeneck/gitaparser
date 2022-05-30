@@ -1,5 +1,4 @@
 const sqlite3 = require("better-sqlite3");
-const sql = require('./sql');
 const c = require('./constants');
 const fs = require('fs');
 
