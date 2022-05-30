@@ -1,16 +1,16 @@
 const axios = require('axios');
 const cheerio = require('cheerio')
-cheerio.prototype[Symbol.iterator] = function* () {
-    for (let i = 0; i < this.length; i += 1) {
-        yield this[i];
-    }
-};
-
-cheerio.prototype.entries = function* () {
-    for (let i = 0; i < this.length; i += 1) {
-        yield [i, this[i]];
-    }
-};
+// cheerio.prototype[Symbol.iterator] = function* () {
+//     for (let i = 0; i < this.length; i += 1) {
+//         yield this[i];
+//     }
+// };
+//
+// cheerio.prototype.entries = function* () {
+//     for (let i = 0; i < this.length; i += 1) {
+//         yield [i, this[i]];
+//     }
+// };
 
 const c = require('./constants');
 const storage = require("./storage");
@@ -19,7 +19,7 @@ const sql = require('./sql');
 
 
 async function getPage(uri = '') {
-    let url = uri ? (uri.indexOf('http://') > -1 ? uri : `${c.URL}${uri}`) : `${c.URL}/${LANG}/${BOOK}`;
+    let url = uri ? (uri.indexOf('https://') > -1 ? uri : `${c.URL}${uri}`) : `${c.URL}/${LANG}/${BOOK}`;
 
     console.log(`Loading page ${url}`);
 
@@ -30,11 +30,16 @@ async function getPage(uri = '') {
 async function parseLinks(url = '', regexp = /(.*)/, limit = 0) {
     let $ = await getPage(url);
 
+    console.log('Parsing ', url);
+
     let items = [];
     for (let linkTag of $('.col-md-12 a')) {
+        $linkTag = $(linkTag);
         items.push({
-            url: linkTag.attribs.href,
-            title: linkTag.children[0].data.match(regexp)[1]
+            url: $linkTag.attr('href'),
+            title: $linkTag.text().match(regexp)[1],
+            book: BOOK,
+            lang: LANG
         });
         if (limit && items.length >= limit) {
             break;
@@ -66,7 +71,8 @@ async function parseText(path) {
 let parseCategories = async () => {
     storage.setBaseUri(`/${LANG}/${BOOK}/`);
 
-    let cantos = await parseLinks('', /«(.*)»/);
+    // let cantos = await parseLinks('', /«(.*)»/); SB rus version only
+    let cantos = await parseLinks('', /(.*)/);
     await storage.insertCategories(cantos);
 
     for (let canto of cantos) {
@@ -95,16 +101,26 @@ let parseTexts = async () => {
     }
 }
 
-const STAGES = {'0': 'init database', '1': 'parsing categories', '2': 'parsing content'};
-const [STAGE, LANG, BOOK] = process.argv.slice(2);
+const STAGES = {'1': 'init database', '2': 'parsing categories', '3': 'parsing content'};
+const [STAGE, BOOK, LANG] = process.argv.slice(2);
 
-console.log('Parser require 1 or 3 arguments: stage (0, 1, 2) book (SB, BG, CC), lang (rus, ukr, eng). Stages are: ', STAGES);
-console.log(`Started ${STAGES[STAGE]}` + (parseInt(STAGE) ? ` ${BOOK} for language ${LANG}` : ``));
+console.log('Parser require 1 or 3 arguments: stage (1, 2, 3) book (SB, BG, CC), lang (rus, ukr, eng). Stages are: ', STAGES);
 
 (async () => {
     switch (parseInt(STAGE)) {
-        case 0: await storage.db.exec(sql.CREATE_CATEGORIES + sql.CREATE_CONTENT); break;
-        case 1: await parseCategories(); break;
-        case 2: await parseTexts(); break;
+        case 1:
+            console.log(`Started db init`);
+            await storage.db.exec(sql.CREATE_CATEGORIES + sql.CREATE_CONTENT);
+            break;
+        case 2:
+            console.log(`Started parsing categories for ${BOOK} [${LANG}]`);
+            await parseCategories();
+            break;
+        case 3:
+            console.log(`Started parsing content for ${BOOK} [${LANG}]`);
+            await parseTexts();
+            break;
+        default:
+            console.log('No arguments provided!');
     }
 }) ();

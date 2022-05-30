@@ -5,14 +5,14 @@ const sql = require('./sql');
 
 let baseUri = '';
 
-let insertCategory = async (url, title) => {
+let insertCategory = async (url, title, book, lang) => {
     let path = url.substr(url.indexOf(baseUri) + baseUri.length);
 
     await db.prepare(sql.INSERT_CATEGORY).run({
         path,
         title,
-        BOOK,
-        LANG
+        book,
+        lang
     });
 }
 
@@ -20,7 +20,7 @@ module.exports.setBaseUri = (name) => baseUri = name;
 
 module.exports.insertCategories = async (items) => {
     for (let item of items) {
-        await insertCategory(item.url, item.title)
+        await insertCategory(item.url, item.title, item.book, item.title)
     }
 }
 

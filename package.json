@@ -4,7 +4,8 @@
   "description": "Bhagavat Gita & Shrimad Bhagavatam in your pocket",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "parse_sb_categories_ua": "node parser.js 2 SB ukr",
+    "parse_sb_text_ua": "node parser.js 3 SB ukr"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,7 @@
   },
   "devDependencies": {
     "axios": "^0.19.2",
-    "cheerio": "^1.0.0-rc.3"
+    "cheerio": "^1.0.0-rc.3",
+    "symbol": "^0.3.1"
   }
 }
