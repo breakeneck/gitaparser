@@ -20,34 +20,33 @@ let parseBookStructure = async () => {
     baseUri = `/${LANG}/${BOOK}/`;
 
     // let cantos = await parseLinks('', /«(.*)»/); SB rus version only
-    let cantos = await parseChapters('', /(.*)/, 0);
+    let cantos = await parseChapters('', /(.*)/, c.LEVEL_CANTO);
 
     for (let cantoUrl of cantos) {
-        let chapters = await parseChapters(cantoUrl, /\d*(.*)/, 1);
+        let chapters = await parseChapters(cantoUrl, /\d*(.*)/, c.LEVEL_CHAPTER);
 
         for (let chapterUrl of chapters) {
-            let texts = await parseChapters(chapterUrl, /(.*)/, 2);
+            let texts = await parseChapters(chapterUrl, /(.*)/, c.LEVEL_TEXT);
         }
     }
-
-    getDb().exec(sql.UPDATE_CATEGORIES_LEVEL);
 }
 
 async function parseChapters(url = '', regexp = /(.*)/, level) {
     let $ = await getPage(url);
 
-    console.log('Parsing ', url);
-
     let urls = [];
     for (let linkTag of $('.col-md-12 a')) {
-        $linkTag = $(linkTag);
-        await getDb().prepare(sql.INSERT_CATEGORY).run({
-            path: url.substr(url.indexOf(baseUri) + baseUri.length),
+        let $linkTag = $(linkTag);
+        let path = url.substr(url.indexOf(baseUri) + baseUri.length);
+        let content = {
+            path: path,
             title: $linkTag.text().match(regexp)[1],
             level: level,
             book: BOOK,
             lang: LANG
-        });
+        };
+        console.log('Inserting', content.title, 'at level', content.level);
+        await getDb().prepare(sql.INSERT_CATEGORY).run(content);
         urls.push($linkTag.attr('href'));
         // if (limit && urls.length >= limit) {
         //     break;
@@ -60,7 +59,7 @@ async function parseChapters(url = '', regexp = /(.*)/, level) {
 
 let parseBookContent = async () => {
     let i = 0;
-    let categories = getDb().prepare(sql.SELECT_CHAPTERS).all({level: 2, book: BOOK,lang: LANG});
+    let categories = getDb().prepare(sql.SELECT_CHAPTERS).all({level: c.LEVEL_TEXT, book: BOOK, lang: LANG});
     console.log(categories);
 
     for (let category of categories) {
@@ -113,7 +112,9 @@ console.log('Parser require 1 or 3 arguments: stage (1, 2, 3) book (SB, BG, CC),
     switch (parseInt(STAGE)) {
         case 1:
             console.log(`Started db init`);
-            fs.unlinkSync('./' + c.DB_FILENAME);
+            try {
+                fs.unlinkSync('./' + c.DB_FILENAME);
+            } catch (error) {}
             await getDb().exec(sql.CREATE_CATEGORIES + sql.CREATE_CONTENT);
             break;
         case 2:
