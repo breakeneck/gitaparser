@@ -47,9 +47,15 @@ module.exports = class Book {
         return await getDb().prepare(sql.INSERT_CONTENT).run(content);
     }
 
+    async deleteOldContent() {
+        return getDb().prepare(sql.DELETE_OLD_CONTENT).run({
+            book_id: this.model.id
+        });
+    }
+
     getContentLevelChapters() {
         return getDb().prepare(sql.SELECT_CHAPTERS).all({
-            level: this.model.levels - 1,
+            level: this.model.levels,
             book_id: this.model.id
         });
     }
@@ -70,7 +76,7 @@ module.exports = class Book {
     }
 
     getUrlByPath(path) {
-        return this.model.url + '/' + path;
+        return this.model.url + path;
     }
 
     getPath(url) {

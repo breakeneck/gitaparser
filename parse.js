@@ -33,6 +33,7 @@ module.exports.bookStructure = async () => {
 
 module.exports.bookContent = async () => {
     let i = 0;
+    await book.deleteOldContent();
     let chapters = book.getContentLevelChapters();
 
     for (let chapter of chapters) {

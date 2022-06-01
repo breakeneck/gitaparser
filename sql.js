@@ -32,6 +32,8 @@ module.exports = {
     SELECT_CHAPTERS: `SELECT * FROM categories 
                         WHERE level = $level 
                           AND book_id = $book_id`,
+    DELETE_OLD_CONTENT: `DELETE FROM content 
+                        WHERE book_id = $book_id`,
     SELECT_BOOK: `SELECT * FROM book 
                         WHERE id = $id`,
 };

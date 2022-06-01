@@ -6,7 +6,7 @@
   "scripts": {
     "reset": "node index.js 0",
     "parse_sb_chapters": "node index.js 1 https://gitabase.com/ukr/SB SB ukr 3",
-    "parse_sb_content": "node index.js 2 21"
+    "parse_sb_content": "node index.js 2 24"
   },
   "repository": {
     "type": "git",
