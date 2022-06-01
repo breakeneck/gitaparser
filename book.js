@@ -20,7 +20,7 @@ module.exports = class Book {
             console.error(error)
         }
 
-        getDb().exec(sql.CREATE_BOOK + sql.CREATE_CATEGORIES + sql.CREATE_CONTENT);
+        getDb().exec(sql.CREATE_BOOK + sql.CREATE_CHAPTERS + sql.CREATE_CONTENT);
     }
 
     load(id) {
@@ -39,7 +39,7 @@ module.exports = class Book {
     async addChapter(content) {
         content.book_id = this.model.id;
         content.level = content.path.split('/').length - 1;
-        return await getDb().prepare(sql.INSERT_CATEGORY).run(content);
+        return await getDb().prepare(sql.INSERT_CHAPTER).run(content);
     }
 
     async addContent(content) {

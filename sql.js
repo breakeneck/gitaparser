@@ -16,20 +16,20 @@ module.exports = {
      "comment" TEXT,
      "book_id" INTEGER
     );`,
-    CREATE_CATEGORIES: `CREATE TABLE IF NOT EXISTS categories (
+    CREATE_CHAPTERS: `CREATE TABLE IF NOT EXISTS chapters (
      "id" INTEGER PRIMARY KEY AUTOINCREMENT,
      "level" INTEGER,
      "path" TEXT,
      "title" TEXT,
      "book_id" INTEGER
-    );`,
+                      );`,
     INSERT_BOOK: `INSERT INTO book (title, abbr, lang, url, levels) 
                             VALUES ($title, $abbr, $lang, $url, $levels)`,
     INSERT_CONTENT: `INSERT INTO content (path, sanskrit, wordly, txt, comment, book_id) 
                             VALUES ($path, $sanskrit, $wordly, $txt, $comment, $book_id)`,
-    INSERT_CATEGORY: `INSERT INTO categories (path, title, level, book_id) 
-                            VALUES ($path, $title, $level, $book_id)`,
-    SELECT_CHAPTERS: `SELECT * FROM categories 
+    INSERT_CHAPTER: `INSERT INTO chapters (path, title, level, book_id)
+                     VALUES ($path, $title, $level, $book_id)`,
+    SELECT_CHAPTERS: `SELECT * FROM chapters 
                         WHERE level = $level 
                           AND book_id = $book_id`,
     DELETE_OLD_CONTENT: `DELETE FROM content 
