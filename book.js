@@ -31,6 +31,10 @@ module.exports = class Book {
         this.hostname = url.hostname;
     }
 
+    async delete(id) {
+        await getDb().prepare(sql.DELETE_BOOK).run({id: id});
+    }
+
     async create(content) {
         const info = await getDb().prepare(sql.INSERT_BOOK).run(content);
         this.load(info.lastInsertRowid);

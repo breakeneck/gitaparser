@@ -1,9 +1,10 @@
 const parse = require("./parse")
 
 const STAGES = {
-    0: {title: 'init database (0)', argsCount: 0},
-    1: {title: 'parse book structure (1 url abbr lang)', argsCount: 4},
-    2: {title: 'parse texts (2 book_id)', argsCount: 2}
+    init: {title: 'init database (init)', argsCount: 1},
+    chapters: {title: 'parse book structure (chapters url abbr lang)', argsCount: 4},
+    content: {title: 'parse texts (content book_id)', argsCount: 2},
+    delete: {title: 'delete book (delete book_id)', argsCount: 2}
 };
 const [STAGE] = process.argv.slice(2, 3);
 
@@ -21,17 +22,21 @@ function loadArgs() {
     let args = loadArgs();
 
     switch (STAGE) {
-        case '0':
+        case 'init':
             parse.resetBook();
             break;
-        case '1':
+        case 'chapters':
             await parse.newBook(...args);
             await parse.bookStructure();
             break;
 
-        case '2':
+        case 'content':
             await parse.loadBook(...args);
             await parse.bookContent();
+            break;
+
+        case 'delete':
+            await parse.deleteBook(...args);
             break;
     }
 })();

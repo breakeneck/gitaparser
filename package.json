@@ -4,9 +4,10 @@
   "description": "Bhagavat Gita & Shrimad Bhagavatam in your pocket",
   "main": "index.js",
   "scripts": {
-    "reset": "node index.js 0",
-    "parse_sb_chapters": "node index.js 1 https://gitabase.com/ukr/SB SB ukr 3",
-    "parse_sb_content": "node index.js 2 24"
+    "reset": "node index.js init",
+    "parse_sb_chapters": "node index.js chapters https://gitabase.com/ukr/SB SB ukr 3",
+    "parse_sb_content": "node index.js content 2",
+    "delete_book": "node index.js delete 2"
   },
   "repository": {
     "type": "git",

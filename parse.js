@@ -16,6 +16,9 @@ module.exports.newBook = async (url, abbr, lang, levels) => {
 module.exports.loadBook = (id) => {
     book.load(id);
 }
+module.exports.deleteBook = (id) => {
+    book.delete(id);
+}
 
 module.exports.bookStructure = async () => {
     let cantosUrls = await parseChapters(book.getBaseUrl());
