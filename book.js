@@ -3,7 +3,6 @@ const fs = require('fs')
 const sql = require('./sql');
 
 const DB_FILENAME = 'gitabase.db';
-const PROTO = 'https://';
 
 let db = null;
 let getDb = function () {
@@ -26,7 +25,9 @@ module.exports = class Book {
 
     load(id) {
         this.model = getDb().prepare(sql.SELECT_BOOK).get({id: id});
+
         let url = new URL(this.model.url);
+        this.protocol = url.protocol;
         this.hostname = url.hostname;
     }
 
@@ -37,7 +38,7 @@ module.exports = class Book {
 
     async addChapter(content) {
         content.book_id = this.model.id;
-        content.level = content.path.split(',').length;
+        content.level = content.path.split('/').length - 1;
         return await getDb().prepare(sql.INSERT_CATEGORY).run(content);
     }
 
@@ -53,16 +54,17 @@ module.exports = class Book {
         });
     }
 
+    getBaseUrl() {
+        return this.model.url;
+    }
+
     hasThirdLevel() {
         return this.model.levels === 3;
     }
 
     getUrl(uri) {
-        if (! uri) {
-            return this.model.url;
-        }
-        if (uri.indexOf(PROTO) === -1) {
-            return PROTO + this.hostname + uri;
+        if (uri.indexOf(this.protocol) === -1) {
+            return this.protocol + '//' + this.hostname + uri;
         }
         return uri;
     }
@@ -72,6 +74,7 @@ module.exports = class Book {
     }
 
     getPath(url) {
-        return url.slice(this.model.url.length - 1);
+        let path = url.slice(this.model.url.length);
+        return path ? path : '/';
     }
 }

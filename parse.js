@@ -18,7 +18,7 @@ module.exports.loadBook = (id) => {
 }
 
 module.exports.bookStructure = async () => {
-    let cantosUrls = await parseChapters(book.getUrl());
+    let cantosUrls = await parseChapters(book.getBaseUrl());
 
     for (let cantoUrl of cantosUrls) {
         let chaptersUrls = await parseChapters(cantoUrl, /\d*(.*)/);
@@ -52,13 +52,14 @@ async function parseChapters(url = '', regexp = /(.*)/) {
     let urls = [];
     for (let el of $('.col-md-12 a')) {
         let $el = $(el);
+        let newUrl = book.getUrl($el.attr('href'));
 
         await book.addChapter({
-            path: book.getPath(url),
+            path: book.getPath(newUrl),
             title: $el.text().match(regexp)[1]
         });
 
-        urls.push($el.attr('href'));
+        urls.push(newUrl);
     }
     return urls;
 }
@@ -79,9 +80,8 @@ async function parseContentPage(path) {
     };
 }
 
-async function getCheerio(uri = '') {
-    let url = book.getUrl(uri)
-    console.log(`Loading page ${url} from ${uri}`);
+async function getCheerio(url = '') {
+    console.log(`Loading page ${url}`);
 
     let page = await axios.get(url);
     return cheerio.load(page.data);
