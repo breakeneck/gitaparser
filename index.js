@@ -33,7 +33,7 @@ function loadArgs() {
 
         case 'content':
             let [book_ids, last_chapter_id] = args;
-            for (const [i, book_id] in book_ids.split(',').entries()) {
+            for (let [i, book_id] of book_ids.split(',').entries()) {
                 await parse.loadBook(book_id);
                 await parse.bookContent(i === 0 ? last_chapter_id : 0);
             }
