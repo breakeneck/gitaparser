@@ -26,13 +26,17 @@ function loadArgs() {
             parse.resetBook();
             break;
         case 'chapters':
-            await parse.newBook(...args);
+            let [url, abbr, lang, levels] = args
+            await parse.newBook(url, abbr, lang, levels);
             await parse.bookStructure();
             break;
 
         case 'content':
-            await parse.loadBook(...args);
-            await parse.bookContent(...args);
+            let [book_ids, last_chapter_id] = args;
+            for (const [i, book_id] in book_ids.split(',').entries()) {
+                await parse.loadBook(book_id);
+                await parse.bookContent(i === 0 ? last_chapter_id : 0);
+            }
             break;
 
         case 'delete':

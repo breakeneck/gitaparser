@@ -34,7 +34,7 @@ module.exports.bookStructure = async () => {
     }
 }
 
-module.exports.bookContent = async (book_id, last_chapter_id) => {
+module.exports.bookContent = async (last_chapter_id) => {
     let i = 0;
     if (! last_chapter_id) {
         await book.deleteOldContent();
