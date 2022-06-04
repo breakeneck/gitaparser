@@ -36,6 +36,11 @@ module.exports = {
                       FROM chapters
                       WHERE level = $level
                         AND book_id = $book_id`,
+    SELECT_CHAPTERS_FROM: `SELECT *
+                      FROM chapters
+                      WHERE level = $level
+                        AND book_id = $book_id
+                        AND id >= $last_chapter_id`,
     DELETE_OLD_CONTENT: `DELETE
                          FROM content
                          WHERE book_id = $book_id`,

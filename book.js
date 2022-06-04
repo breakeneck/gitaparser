@@ -64,6 +64,14 @@ module.exports = class Book {
         });
     }
 
+    getContentLevelChaptersFrom(last_chapter_id) {
+        return getDb().prepare(sql.SELECT_CHAPTERS_FROM).all({
+            level: this.model.levels,
+            book_id: this.model.id,
+            last_chapter_id: last_chapter_id
+        });
+    }
+
     getBaseUrl() {
         return this.model.url;
     }

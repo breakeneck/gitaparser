@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "reset": "node index.js init",
-    "parse_sb_chapters": "node index.js chapters https://gitabase.com/ukr/SB SB ukr 3",
-    "parse_sb_content": "node index.js content 2",
+    "parse_chapters": "node index.js chapters https://gitabase.com/eng/SB SB eng 3",
+    "parse_content": "node index.js content 6 56607",
     "delete_book": "node index.js delete 2"
   },
   "repository": {

@@ -32,7 +32,7 @@ function loadArgs() {
 
         case 'content':
             await parse.loadBook(...args);
-            await parse.bookContent();
+            await parse.bookContent(...args);
             break;
 
         case 'delete':

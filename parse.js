@@ -34,14 +34,16 @@ module.exports.bookStructure = async () => {
     }
 }
 
-module.exports.bookContent = async () => {
+module.exports.bookContent = async (book_id, last_chapter_id) => {
     let i = 0;
-    await book.deleteOldContent();
-    let chapters = book.getContentLevelChapters();
+    if (! last_chapter_id) {
+        await book.deleteOldContent();
+    }
+    let chapters = book.getContentLevelChaptersFrom(last_chapter_id || 0)
 
     for (let chapter of chapters) {
         try {
-            console.log(`Inserting ${chapter.path} ${Math.round(++i/chapters.length * 100)}%`);
+            console.log(`Inserted ${Math.round(++i/chapters.length * 100)}% chapter # ${chapter.id}`);
 
             await book.addContent(await parseContentPage(chapter.path));
         } catch (error) {
