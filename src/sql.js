@@ -11,11 +11,11 @@ module.exports = {
     CREATE_CONTENT: `CREATE TABLE IF NOT EXISTS content
                      (
                          "id"       INTEGER PRIMARY KEY AUTOINCREMENT,
-                         "path"     TEXT,
                          "sanskrit" TEXT,
                          "wordly"   TEXT,
                          "txt"      TEXT,
                          "comment"  TEXT,
+                         "chapter_id" INTEGER REFERENCES chapters (id) ON DELETE CASCADE,
                          "book_id"  INTEGER REFERENCES book (id) ON DELETE CASCADE
                      );`,
     CREATE_CHAPTERS: `CREATE TABLE IF NOT EXISTS chapters
@@ -28,8 +28,8 @@ module.exports = {
                       );`,
     INSERT_BOOK: `INSERT INTO book (title, abbr, lang, url, levels)
                   VALUES ($title, $abbr, $lang, $url, $levels)`,
-    INSERT_CONTENT: `INSERT INTO content (path, sanskrit, wordly, txt, comment, book_id)
-                     VALUES ($path, $sanskrit, $wordly, $txt, $comment, $book_id)`,
+    INSERT_CONTENT: `INSERT INTO content (sanskrit, wordly, txt, comment, chapter_id, book_id)
+                     VALUES ($sanskrit, $wordly, $txt, $comment, $chapter_id, $book_id)`,
     INSERT_CHAPTER: `INSERT INTO chapters (path, title, level, book_id)
                      VALUES ($path, $title, $level, $book_id)`,
     SELECT_CHAPTERS: `SELECT *

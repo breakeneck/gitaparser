@@ -1,10 +1,10 @@
-const parse = require("./parse")
+const Parser = require("./src/parser")
 
 const STAGES = {
-    init: {title: 'init database (init)', argsCount: 1},
-    chapters: {title: 'parse book structure (chapters url abbr lang)', argsCount: 4},
-    content: {title: 'parse texts (content book_id)', argsCount: 2},
-    delete: {title: 'delete book (delete book_id)', argsCount: 2}
+    init: {title: 'init database (init engine)', argsCount: 2},
+    chapters: {title: 'parse book structure (engine chapters url abbr lang)', argsCount: 5},
+    content: {title: 'parse texts (content engine book_id)', argsCount: 3},
+    delete: {title: 'delete book (delete engine book_id)', argsCount: 3}
 };
 const [STAGE] = process.argv.slice(2, 3);
 
@@ -20,27 +20,28 @@ function loadArgs() {
 
 (async () => {
     let args = loadArgs();
+    let parser = new Parser(args.shift());
 
     switch (STAGE) {
         case 'init':
-            parse.resetBook();
+            parser.resetBook();
             break;
         case 'chapters':
             let [url, abbr, lang, levels] = args
-            await parse.newBook(url, abbr, lang, levels);
-            await parse.bookStructure();
+            await parser.newBook(url, abbr, lang, levels);
+            await parser.bookStructure();
             break;
 
         case 'content':
             let [book_ids, last_chapter_id] = args;
             for (let [i, book_id] of book_ids.split(',').entries()) {
-                await parse.loadBook(book_id);
-                await parse.bookContent(i === 0 ? last_chapter_id : 0);
+                await parser.loadBook(book_id);
+                await parser.bookContent(i === 0 ? last_chapter_id : 0);
             }
             break;
 
         case 'delete':
-            await parse.deleteBook(...args);
+            await parser.deleteBook(...args);
             break;
     }
 })();
