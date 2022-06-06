@@ -32,9 +32,8 @@ module.exports = class Parser {
     }
 
     async bookStructure() {
-        let level = 1;
         let cantoUrls = [];
-        if (this.book.hasThirdLevel()) {
+        if (this.book.hasThreeLevels()) {
             let cantos = await this.engine.parseCantos(this.urlMan.rootUrl);
             let chaptersUrls = await this.addChapters(cantos);
             level++;
@@ -46,12 +45,10 @@ module.exports = class Parser {
         for (let cantoUrl of cantoUrls) {
             let chapters = await this.engine.parseChapters(cantoUrl);
             let chaptersUrls = await this.addChapters(chapters);
-            level++;
 
             for (let chapterUrl of chaptersUrls) {
                 let texts = await this.engine.parseTexts(chapterUrl);
                 await this.addChapters(texts);
-                level++;
             }
         }
     }

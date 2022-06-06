@@ -6,7 +6,7 @@
   "scripts": {
     "reset": "node index.js init vedabase",
     "parse_chapters": "node index.js chapters vedabase https://vedabase.io/en/library/bg BG eng 2",
-    "parse_content": "node index.js content vedabase 5",
+    "parse_content": "node index.js content vedabase 8",
     "delete_book": "node index.js delete vedabase 2"
   },
   "repository": {
