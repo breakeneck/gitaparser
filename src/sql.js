@@ -6,6 +6,7 @@ module.exports = {
                       "abbr"   TEXT,
                       "lang"   TEXT,
                       "url"    TEXT,
+                      "engine" TEXT,
                       "levels" INTEGER
                   );`,
     CREATE_CONTENT: `CREATE TABLE IF NOT EXISTS content
@@ -26,8 +27,8 @@ module.exports = {
                           "title"   TEXT,
                           "book_id" INTEGER REFERENCES book (id) ON DELETE CASCADE
                       );`,
-    INSERT_BOOK: `INSERT INTO book (title, abbr, lang, url, levels)
-                  VALUES ($title, $abbr, $lang, $url, $levels)`,
+    INSERT_BOOK: `INSERT INTO book (title, abbr, lang, url, engine, levels)
+                  VALUES ($title, $abbr, $lang, $url, $engine, $levels)`,
     INSERT_CONTENT: `INSERT INTO content (sanskrit, wordly, txt, comment, chapter_id, book_id)
                      VALUES ($sanskrit, $wordly, $txt, $comment, $chapter_id, $book_id)`,
     INSERT_CHAPTER: `INSERT INTO chapters (path, title, level, book_id)

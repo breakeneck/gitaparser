@@ -13,10 +13,12 @@ module.exports = class Parser {
     }
 
     async newBook(url, abbr, lang, levels) {
+        let engine = this.engine.getDbName().split('.')[0];
         let title = await this.engine.parseBookTitle(url);
-        let book_id = await this.book.create({title, url, abbr, lang, levels});
+        let book_id = await this.book.create({title, url, abbr, lang, engine, levels});
 
         this.loadBook(book_id);
+        return book_id;
     }
 
     loadBook(id) {
@@ -30,10 +32,12 @@ module.exports = class Parser {
     }
 
     async bookStructure() {
+        let level = 1;
         let cantoUrls = [];
         if (this.book.hasThirdLevel()) {
             let cantos = await this.engine.parseCantos(this.urlMan.rootUrl);
             let chaptersUrls = await this.addChapters(cantos);
+            level++;
         }
         else {
             cantoUrls = [this.urlMan.rootUrl];
@@ -42,10 +46,12 @@ module.exports = class Parser {
         for (let cantoUrl of cantoUrls) {
             let chapters = await this.engine.parseChapters(cantoUrl);
             let chaptersUrls = await this.addChapters(chapters);
+            level++;
 
             for (let chapterUrl of chaptersUrls) {
                 let texts = await this.engine.parseTexts(chapterUrl);
                 await this.addChapters(texts);
+                level++;
             }
         }
     }

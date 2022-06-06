@@ -5,8 +5,8 @@ const Engine = require("./engine")
 module.exports.getEngine = function (engineName) {
     switch (engineName) {
         case Engine.GITABASE:
-            return new Gitabase();
+            return new Gitabase(engineName);
         case Engine.VEDABASE:
-            return new Vedabase();
+            return new Vedabase(engineName);
     }
 }

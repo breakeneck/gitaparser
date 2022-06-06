@@ -4,10 +4,6 @@
 const {Engine} = require("../engine");
 
 module.exports = class Gitabase extends Engine {
-    getDbName() {
-        return 'gitabase.db';
-    }
-
     async parseBookTitle(url) {
         let $ = await this.engine.getCheerio(url);
         return $('h4').text();
@@ -29,6 +25,7 @@ module.exports = class Gitabase extends Engine {
         let $ = await this.getCheerio(this.urlMan.getByPath(chapter.path));
         let sanskrit = $('blockquote').text().trim();
         return {
+            path,
             chapter_id: chapter.id,
             sanskrit,
             wordly: sanskrit

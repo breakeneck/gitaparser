@@ -5,8 +5,16 @@ module.exports.GITABASE = 'gitabase';
 module.exports.VEDABASE = 'vedabase';
 
 module.exports.Engine = class Engine {
+    constructor(engineName) {
+        this.engineName = engineName;
+    }
+
     setUrlMan(urlMan) {
         this.urlMan = urlMan;
+    }
+
+    getDbName() {
+        return this.engineName + '.db';
     }
 
     async getCheerio(url = '') {
@@ -29,8 +37,6 @@ module.exports.Engine = class Engine {
         }
         return chapters;
     }
-
-    getDbName() {}
 
     async parseBookTitle(url) {}
 

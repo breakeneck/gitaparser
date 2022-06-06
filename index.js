@@ -28,8 +28,9 @@ function loadArgs() {
             break;
         case 'chapters':
             let [url, abbr, lang, levels] = args
-            await parser.newBook(url, abbr, lang, levels);
+            let book_id = await parser.newBook(url, abbr, lang, levels);
             await parser.bookStructure();
+            console.log(`Created book ${book_id}`);
             break;
 
         case 'content':
