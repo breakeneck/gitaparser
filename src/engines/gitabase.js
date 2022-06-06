@@ -1,6 +1,3 @@
-// const {Engine} = require("../engine");
-
-// const {Engine} = require("../engine");
 const {Engine} = require("../engine");
 
 module.exports = class Gitabase extends Engine {
@@ -25,7 +22,7 @@ module.exports = class Gitabase extends Engine {
         let $ = await this.getCheerio(this.urlMan.getByPath(chapter.path));
         let sanskrit = $('blockquote').text().trim();
         return {
-            path,
+            path: chapter.path,
             chapter_id: chapter.id,
             sanskrit,
             wordly: sanskrit

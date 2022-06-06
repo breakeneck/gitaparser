@@ -22,6 +22,7 @@ module.exports = class Vedabase extends Engine {
     async parseContentPage(chapter) {
         let $ = await this.getCheerio(this.urlMan.getByPath(chapter.path));
         return {
+            path: chapter.path,
             chapter_id: chapter.id,
             sanskrit: $('.r-verse-text').text(),
             wordly: $('.r-synonyms').text(),

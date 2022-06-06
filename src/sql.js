@@ -9,16 +9,6 @@ module.exports = {
                       "engine" TEXT,
                       "levels" INTEGER
                   );`,
-    CREATE_CONTENT: `CREATE TABLE IF NOT EXISTS content
-                     (
-                         "id"       INTEGER PRIMARY KEY AUTOINCREMENT,
-                         "sanskrit" TEXT,
-                         "wordly"   TEXT,
-                         "txt"      TEXT,
-                         "comment"  TEXT,
-                         "chapter_id" INTEGER REFERENCES chapters (id) ON DELETE CASCADE,
-                         "book_id"  INTEGER REFERENCES book (id) ON DELETE CASCADE
-                     );`,
     CREATE_CHAPTERS: `CREATE TABLE IF NOT EXISTS chapters
                       (
                           "id"      INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -27,10 +17,21 @@ module.exports = {
                           "title"   TEXT,
                           "book_id" INTEGER REFERENCES book (id) ON DELETE CASCADE
                       );`,
+    CREATE_CONTENT: `CREATE TABLE IF NOT EXISTS content
+                     (
+                         "id"         INTEGER PRIMARY KEY AUTOINCREMENT,
+                         "path"       TEXT,
+                         "sanskrit"   TEXT,
+                         "wordly"     TEXT,
+                         "txt"        TEXT,
+                         "comment"    TEXT,
+                         "chapter_id" INTEGER REFERENCES chapters (id) ON DELETE CASCADE,
+                         "book_id"    INTEGER REFERENCES book (id) ON DELETE CASCADE
+                     );`,
     INSERT_BOOK: `INSERT INTO book (title, abbr, lang, url, engine, levels)
                   VALUES ($title, $abbr, $lang, $url, $engine, $levels)`,
-    INSERT_CONTENT: `INSERT INTO content (sanskrit, wordly, txt, comment, chapter_id, book_id)
-                     VALUES ($sanskrit, $wordly, $txt, $comment, $chapter_id, $book_id)`,
+    INSERT_CONTENT: `INSERT INTO content (path, sanskrit, wordly, txt, comment, chapter_id, book_id)
+                     VALUES ($path, $sanskrit, $wordly, $txt, $comment, $chapter_id, $book_id)`,
     INSERT_CHAPTER: `INSERT INTO chapters (path, title, level, book_id)
                      VALUES ($path, $title, $level, $book_id)`,
     SELECT_CHAPTERS: `SELECT *
@@ -38,10 +39,10 @@ module.exports = {
                       WHERE level = $level
                         AND book_id = $book_id`,
     SELECT_CHAPTERS_FROM: `SELECT *
-                      FROM chapters
-                      WHERE level = $level
-                        AND book_id = $book_id
-                        AND id >= $last_chapter_id`,
+                           FROM chapters
+                           WHERE level = $level
+                             AND book_id = $book_id
+                             AND id >= $last_chapter_id`,
     DELETE_OLD_CONTENT: `DELETE
                          FROM content
                          WHERE book_id = $book_id`,

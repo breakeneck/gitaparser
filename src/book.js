@@ -25,12 +25,10 @@ module.exports = class Book {
     }
 
     async addChapter(title, url) {
-        let path = url.slice(this.model.url.length).trim();
-        path = (path === '/') ? path
-            : (path.endsWith('/') ? path.slice(0, -1) : path);
+        let path = this.getPath(url);
         let content = {
-            title: title,
-            path: path,
+            title,
+            path,
             book_id: this.model.id,
             level: path.split('/').length - 1
         };
@@ -65,5 +63,13 @@ module.exports = class Book {
 
     hasThreeLevels() {
         return this.model.levels === 3;
+    }
+
+    getPath(url) {
+        let path = url.slice(this.model.url.length).trim();
+        if (path === '/') {
+            return path;
+        }
+        return path.endsWith('/') ? path.slice(0, -1) : path;
     }
 }
