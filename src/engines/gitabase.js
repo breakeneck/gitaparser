@@ -48,9 +48,7 @@ module.exports = class Gitabase extends Engine {
             return input;
         }
         let from = Object.keys(sanscreet.mapping).join('');
-        // let to = Object.values(sanscreet.mapping).join('');
-        let result = input.replace(new RegExp('([' + from + '])', 'g'), to => sanscreet.mapping[to]);
-        return result;
+        return input.replace(new RegExp('([' + from + '])', 'g'), to => sanscreet.mapping[to]);
     }
 }
 

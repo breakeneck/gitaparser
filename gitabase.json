@@ -6,9 +6,51 @@
     "levels": 2
   },
   {
-    "url": "https://gitabase.com/rus/SB",
+    "url": "https://gitabase.com/ukr/SB",
     "lang": "ukr",
     "abbr": "sb",
+    "levels": 3
+  },
+  {
+    "url": "https://gitabase.com/ukr/CC",
+    "lang": "ukr",
+    "abbr": "cc",
+    "levels": 3
+  },
+  {
+    "url": "https://gitabase.com/rus/BG",
+    "lang": "rus",
+    "abbr": "bg",
+    "levels": 2
+  },
+  {
+    "url": "https://gitabase.com/rus/SB",
+    "lang": "rus",
+    "abbr": "sb",
+    "levels": 3
+  },
+  {
+    "url": "https://gitabase.com/rus/CC",
+    "lang": "rus",
+    "abbr": "cc",
+    "levels": 3
+  },
+  {
+    "url": "https://gitabase.com/eng/BG",
+    "lang": "eng",
+    "abbr": "bg",
+    "levels": 2
+  },
+  {
+    "url": "https://gitabase.com/eng/SB",
+    "lang": "eng",
+    "abbr": "sb",
+    "levels": 3
+  },
+  {
+    "url": "https://gitabase.com/ukr/CC",
+    "lang": "ukr",
+    "abbr": "cc",
     "levels": 3
   }
 ]
