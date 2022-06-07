@@ -1,4 +1,4 @@
-module.exports.mapping = {
+const GITABASE_MAPPINGS = {
     '\uF100': 'А̄',
     '\uF101': 'а̄',
     '\uF102': 'Д̣',
@@ -35,4 +35,107 @@ module.exports.mapping = {
     '\u04EF': 'ӯ',
 }
 
+const UA_MAPPINGS = {
+    'джн̃': 'гь',
+    '\'': '',
+    'А̄': 'А',
+    'а̄': 'а',
+    'Д̣': 'Д',
+    'д̣': 'д',
+    'Л̣': 'Лі',
+    'л̣': 'лі',
+    'Л̣̄': 'Лі',
+    'л̣̄': 'лі',
+    'М̇': 'М',
+    'м̇': 'м',
+    'М̣': 'М',
+    'м̣': 'м',
+    'М̣̄': 'М',
+    'м̣̄': 'м',
+    'Н̇': 'Н',
+    'н̇': 'н',
+    'Н̣': 'Н',
+    'н̣': 'н',
+    'Н̃': 'Н',
+    'н̃': 'н',
+    'Р̣': 'Рі',
+    'р̣': 'рі',
+    'Р̣̄': 'Рі',
+    'р̣̄': 'рі',
+    'Х̣': 'Х',
+    'х̣': 'х',
+    'Т̣': 'Т',
+    'т̣': 'т',
+    'Ш́': 'Ш',
+    'ш́': 'ш',
+    'Ӣ': 'Й',
+    'ӣ': 'й',
+    'Ӯ': 'У',
+    'ӯ': 'у',
+    'ī': 'і',
+}
 
+const RU_MAPPINGS = {
+    'джн̃': 'гь',
+    '\'': '',
+    'А̄': 'А',
+    'а̄': 'а',
+    'Д̣': 'Д',
+    'д̣': 'д',
+    'Л̣': 'Лі',
+    'л̣': 'лі',
+    'Л̣̄': 'Лі',
+    'л̣̄': 'лі',
+    'М̇': 'М',
+    'м̇': 'м',
+    'М̣': 'М',
+    'м̣': 'м',
+    'М̣̄': 'М',
+    'м̣̄': 'м',
+    'Н̇': 'Н',
+    'н̇': 'н',
+    'Н̣': 'Н',
+    'н̣': 'н',
+    'Н̃': 'Н',
+    'н̃': 'н',
+    'Р̣': 'Рі',
+    'р̣': 'рі',
+    'Р̣̄': 'Рі',
+    'р̣̄': 'рі',
+    'Х̣': 'Х',
+    'х̣': 'х',
+    'Т̣': 'Т',
+    'т̣': 'т',
+    'Ш́': 'Ш',
+    'ш́': 'ш',
+    'Ӣ': 'Й',
+    'ӣ': 'й',
+    'Ӯ': 'У',
+    'ӯ': 'у',
+    'ī': 'і',
+}
+
+
+function replaceChars(input, collection) {
+    if (typeof input  !== 'string') {
+        return input;
+    }
+    let from = Object.keys(collection).join('');
+    let result = input.replace(new RegExp('([' + from + '])', 'g'), to => collection[to]);
+    return result;
+}
+
+module.exports.replaceFromGitabaseChars = function (input) {
+    return replaceChars(input, GITABASE_MAPPINGS);
+}
+
+module.exports.replaceToCyrillicChars = function (input, lang) {
+    if (typeof input  !== 'string') {
+        return input;
+    }
+    const mappings = (lang === 'ukr') ? UA_MAPPINGS : (lang === 'rus' ? RU_MAPPINGS : {})
+    for (const [from, to] of Object.entries(mappings)) {
+        input = input.replace(new RegExp('(' + from + ')', 'g'), to);
+    }
+    return input;
+}

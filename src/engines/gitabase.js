@@ -38,17 +38,9 @@ module.exports = class Gitabase extends Engine {
 
     sanscreetFilter(content) {
         for (const key in content) {
-            content[key] = this.replaceSanscreetChars(content[key]);
+            content[key] = sanscreet.replaceFromGitabaseChars(content[key]);
         }
         return content;
-    }
-
-    replaceSanscreetChars(input) {
-        if (typeof input  !== 'string') {
-            return input;
-        }
-        let from = Object.keys(sanscreet.mapping).join('');
-        return input.replace(new RegExp('([' + from + '])', 'g'), to => sanscreet.mapping[to]);
     }
 }
 
