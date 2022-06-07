@@ -4,9 +4,10 @@
   "description": "Bhagavat Gita & Shrimad Bhagavatam in your pocket",
   "main": "index.js",
   "scripts": {
-    "reset": "node index.js init vedabase",
+    "reset": "node index.js init gitabase",
     "parse_chapters": "node index.js chapters vedabase https://vedabase.io/en/library/bg BG eng 2",
     "parse_content": "node index.js content vedabase 8",
+    "parse_file": "node index.js file gitabase gitabase.json",
     "delete_book": "node index.js delete vedabase 2"
   },
   "repository": {
