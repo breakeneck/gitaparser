@@ -1,10 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio')
 
-module.exports.GITABASE = 'gitabase';
-module.exports.VEDABASE = 'vedabase';
-
-module.exports.Engine = class Engine {
+module.exports = class Engine {
     constructor(engineName) {
         this.engineName = engineName;
     }

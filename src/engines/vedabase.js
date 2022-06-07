@@ -1,4 +1,4 @@
-const {Engine} = require("../engine");
+const Engine = require("../engine");
 
 module.exports = class Vedabase extends Engine {
     async parseBookTitle(url) {

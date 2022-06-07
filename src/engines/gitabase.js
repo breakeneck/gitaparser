@@ -1,8 +1,9 @@
-const {Engine} = require("../engine");
+const Engine = require("../engine");
+const sanscreet = require("../sanscreet")
 
 module.exports = class Gitabase extends Engine {
     async parseBookTitle(url) {
-        let $ = await this.engine.getCheerio(url);
+        let $ = await this.getCheerio(url);
         return $('h4').text();
     }
 
@@ -15,13 +16,13 @@ module.exports = class Gitabase extends Engine {
     }
 
     async parseTexts(url) {
-        return await this.generalParseChapters(url, '.col-md-12 a')
+        return this.sanscreetFilter(await this.generalParseChapters(url, '.col-md-12 a'))
     }
 
     async parseContentPage(chapter) {
         let $ = await this.getCheerio(this.urlMan.getByPath(chapter.path));
         let sanskrit = $('blockquote').text().trim();
-        return {
+        return this.sanscreetFilter({
             path: chapter.path,
             chapter_id: chapter.id,
             sanskrit,
@@ -32,7 +33,24 @@ module.exports = class Gitabase extends Engine {
             comment: sanskrit
                 ? $('.dia_text .dia_text').text().trim()
                 : $('.pager').next().find('.dia_text').text().trim()
-        };
+        });
+    }
+
+    sanscreetFilter(content) {
+        for (const key in content) {
+            content[key] = this.replaceSanscreetChars(content[key]);
+        }
+        return content;
+    }
+
+    replaceSanscreetChars(input) {
+        if (typeof input  !== 'string') {
+            return input;
+        }
+        let from = Object.keys(sanscreet.mapping).join('');
+        // let to = Object.values(sanscreet.mapping).join('');
+        let result = input.replace(new RegExp('([' + from + '])', 'g'), to => sanscreet.mapping[to]);
+        return result;
     }
 }
 

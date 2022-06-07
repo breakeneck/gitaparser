@@ -36,7 +36,6 @@ module.exports = class Parser {
         if (this.book.hasThreeLevels()) {
             let cantos = await this.engine.parseCantos(this.urlMan.rootUrl);
             let chaptersUrls = await this.addChapters(cantos);
-            level++;
         }
         else {
             cantoUrls = [this.urlMan.rootUrl];
@@ -81,27 +80,3 @@ module.exports = class Parser {
         }
     }
 }
-
-
-
-
-// async bookStructure() {
-//     let cantoUrls = [];
-//     if (this.book.hasThirdLevel()) {
-//         let cantos = await this.engine.parseCantos(this.urlMan.rootUrl);
-//         cantoUrls = cantos.map((canto) => this.book.addChapter(canto.title, canto.url))
-//     }
-//     else {
-//         cantoUrls = [this.urlMan.rootUrl];
-//     }
-//
-//     for (let cantoUrl of cantoUrls) {
-//         let chapters = await this.engine.parseChapters(cantoUrl);
-//         let chaptersUrls = await chapters.map(async(chapter) => await this.book.addChapter(chapter.title, chapter.url));
-//
-//         for (let chapterUrl of chaptersUrls) {
-//             let texts = await this.engine.parseTexts(chapterUrl);
-//             texts.map((text) => this.book.addChapter(text.title, text.url));
-//         }
-//     }
-// }

@@ -48,7 +48,7 @@ function loadArgs() {
             for (let params of entries) {
                 let book_id = await parser.newBook(params.url, params.abbr, params.lang, params.levels);
                 await parser.bookStructure();
-                console.log(`Created book ${book_id}. Parsing content...`);
+                console.log(`Created book #${book_id}. Parsing content...`);
                 await parser.bookContent();
             }
             break;

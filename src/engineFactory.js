@@ -1,12 +1,15 @@
 const Gitabase = require("./engines/gitabase");
 const Vedabase = require("./engines/vedabase");
-const Engine = require("./engine")
+const {Engine} = require("./engine")
+
+GITABASE = 'gitabase';
+VEDABASE = 'vedabase';
 
 module.exports.getEngine = function (engineName) {
     switch (engineName) {
-        case Engine.GITABASE:
+        case GITABASE:
             return new Gitabase(engineName);
-        case Engine.VEDABASE:
+        case VEDABASE:
             return new Vedabase(engineName);
     }
 }

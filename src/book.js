@@ -1,14 +1,20 @@
 const sqlite3 = require('better-sqlite3');
 const sql = require('./sql');
+const fs = require('fs')
 
 
 module.exports = class Book {
     constructor(dbName) {
-        this.db = new sqlite3('./db/' + dbName);
+        const dbPath = './db/' + dbName;
+        // const makeReset = fs.existsSync(dbPath);
+        this.db = new sqlite3(dbPath);
+        // if (makeReset) {
+        //     await this.reset();
+        // }
     }
 
-    reset() {
-        this.db.exec(sql.CREATE_BOOK + sql.CREATE_CHAPTERS + sql.CREATE_CONTENT);
+    async reset() {
+        await this.db.exec(sql.CREATE_BOOK + sql.CREATE_CHAPTERS + sql.CREATE_CONTENT);
     }
 
     load(id) {
