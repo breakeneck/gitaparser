@@ -35,7 +35,7 @@ module.exports = class Parser {
         let cantoUrls = [];
         if (this.book.hasThreeLevels()) {
             let cantos = await this.engine.parseCantos(this.urlMan.rootUrl);
-            let chaptersUrls = await this.addChapters(cantos);
+            cantoUrls = await this.addChapters(cantos);
         }
         else {
             cantoUrls = [this.urlMan.rootUrl];
