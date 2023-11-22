@@ -21,7 +21,7 @@ module.exports = class Gitabase extends Engine {
 
     async parseContentPage(chapter) {
         let $ = await this.getCheerio(this.urlMan.getByPath(chapter.path));
-        let sanskrit = $('blockquote').text().trim();
+        let sanskrit = $('.div_translit blockquote').text().trim();
         return this.sanscreetFilter({
             path: chapter.path,
             chapter_id: chapter.id,

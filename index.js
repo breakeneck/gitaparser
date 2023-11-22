@@ -4,7 +4,7 @@ const fs = require('fs');
 const STAGES = {
     init: {title: 'init database (init engine)', argsCount: 2},
     chapters: {title: 'parse book structure (engine chapters url abbr lang)', argsCount: 5},
-    content: {title: 'parse texts (content engine book_id)', argsCount: 3},
+    content: {title: 'parse texts (engine content book_id)', argsCount: 3},
     file: {title: 'parse json file (file filename)', argsCount: 2},
     delete: {title: 'delete book (delete engine book_id)', argsCount: 3}
 };
@@ -38,6 +38,7 @@ function loadArgs() {
         case 'content':
             let [book_ids, last_chapter_id] = args;
             for (let [i, book_id] of book_ids.split(',').entries()) {
+                // console.log('content', book_id);
                 await parser.loadBook(book_id);
                 await parser.bookContent(i === 0 ? last_chapter_id : 0);
             }

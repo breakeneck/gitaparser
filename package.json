@@ -24,11 +24,11 @@
   },
   "homepage": "https://github.com/breakeneck/gitaparser#readme",
   "dependencies": {
-    "better-sqlite3": "^7.1.0"
+    "better-sqlite3": "^9.1.0"
   },
   "devDependencies": {
-    "axios": "^0.19.2",
-    "cheerio": "^1.0.0-rc.3",
+    "axios": "^1.6.1",
+    "cheerio": "^1.0.0-rc.12",
     "symbol": "^0.3.1"
   }
 }

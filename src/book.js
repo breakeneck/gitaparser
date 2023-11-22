@@ -65,7 +65,7 @@ module.exports = class Book {
 
     getContentLevelChaptersFrom(last_chapter_id) {
         return this.db.prepare(sql.SELECT_CHAPTERS_FROM).all({
-            level: this.model.levels,
+            level: this.model.levels - 1,
             book_id: this.model.id,
             last_chapter_id: last_chapter_id
         });

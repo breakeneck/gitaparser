@@ -25,6 +25,7 @@ module.exports = class Parser {
         this.book.load(id);
         this.urlMan = new UrlMan(this.book.model.url);
         this.engine.setUrlMan(this.urlMan);
+        console.log('book', this.book.model.title)
     }
 
     deleteBook(id) {
@@ -67,6 +68,7 @@ module.exports = class Parser {
             await this.book.deleteOldContent();
         }
         let chapters = this.book.getContentLevelChaptersFrom(last_chapter_id || 0)
+        // console.log('Chapters', chapters);
 
         for (let chapter of chapters) {
             try {
