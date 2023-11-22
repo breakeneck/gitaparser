@@ -15,13 +15,13 @@ const parser = new Parser();
     player.play('end.mp3')
 })();
 
-const parseChapters = async () => {
+async function parseChapters(){
     const {engine, url, abbr, lang, levels} = argv;
     await parser.newBook(engine, url, abbr, lang, levels);
     await parser.bookStructure();
 }
 
-const parseContent = async () => {
+async function parseContent(){
     const {book_id, last_chapter_id} = argv;
     await parser.loadBook(book_id);
     await parser.bookContent(last_chapter_id ? last_chapter_id : 0);

@@ -6,10 +6,10 @@ const sanscreet = require("./sanscreet")
 
 
 module.exports = class Book {
+    model
     constructor() {
         const dbPath = './db/general.db';
         this.db = new sqlite3(dbPath);
-        this.model = {}
     }
 
     async initTables() {
@@ -17,7 +17,7 @@ module.exports = class Book {
     }
 
     async load(id) {
-        this.model = await this.db.prepare(sql.SELECT_BOOK).get({id: id});
+        this.model = this.db.prepare(sql.SELECT_BOOK).get({id: id});
     }
 
     async delete(id) {
