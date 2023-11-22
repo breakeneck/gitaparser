@@ -11,7 +11,8 @@ module.exports = class Engine {
     }
 
     getDbName() {
-        return this.engineName + '.db';
+        // return this.engineName + '.db';
+        return 'general.db';
     }
 
     async getCheerio(url = '') {
