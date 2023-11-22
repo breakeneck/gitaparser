@@ -29,7 +29,7 @@ module.exports = class Parser {
         this.setEngine(this.book.model.engine);
         this.urlMan = new UrlMan(this.book.model.url);
         this.engine.setUrlMan(this.urlMan);
-        console.log('book', this.book.model.title)
+        console.log('book', this.book.model.id, this.book.model.title)
     }
 
     deleteBook(id) {

@@ -19,6 +19,7 @@ async function parseChapters(){
     const {engine, url, abbr, lang, levels} = argv;
     await parser.newBook(engine, url, abbr, lang, levels);
     await parser.bookStructure();
+    console.log('Book Chapters', parser.book.model.id, parser.book.model.title)
 }
 
 async function parseContent(){
