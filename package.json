@@ -24,7 +24,8 @@
   },
   "homepage": "https://github.com/breakeneck/gitaparser#readme",
   "dependencies": {
-    "better-sqlite3": "^9.1.0"
+    "better-sqlite3": "^9.1.0",
+    "play-sound": "^1.1.6"
   },
   "devDependencies": {
     "axios": "^1.6.1",

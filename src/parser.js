@@ -1,21 +1,24 @@
 const Book = require('./book');
+const Engine = require('./engine');
 const engineFactory = require("./engineFactory");
 const UrlMan = require("./urlMan");
 
 module.exports = class Parser {
-    constructor(engineName) {
+    book = new Book()
+    engine = new Engine()
+    setEngine(engineName) {
         this.engine = engineFactory.getEngine(engineName);
-        this.book = new Book(this.engine.getDbName());
     }
 
-    resetBook() {
-        this.book.reset();
+    initDbTables() {
+        (new Book()).initTables();
     }
 
-    async newBook(url, abbr, lang, levels) {
-        let engine = this.engine.getDbName().split('.')[0];
+    async newBook(engine, url, abbr, lang, levels) {
+        this.setEngine(engine);
         let title = await this.engine.parseBookTitle(url);
-        let book_id = await this.book.create({title, url, abbr, lang, engine, levels});
+
+        let book_id = await (new Book()).create({title, url, abbr, lang, engine, levels});
 
         this.loadBook(book_id);
         return book_id;
@@ -23,6 +26,7 @@ module.exports = class Parser {
 
     loadBook(id) {
         this.book.load(id);
+        this.setEngine(this.book.model.engine);
         this.urlMan = new UrlMan(this.book.model.url);
         this.engine.setUrlMan(this.urlMan);
         console.log('book', this.book.model.title)

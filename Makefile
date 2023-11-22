@@ -1,8 +1,8 @@
 vedabase-init:
-	node index init vedabase
+	node index -action init
 
 vedabase-chapters:
-	node index chapters vedabase https://vedabase.io/en/library/sb/ sb en 3 # url, abbr, lang, levels
+	node index --action=chapters --engine=vedabase --url=https://vedabase.io/en/library/sb/ --abbr=sb --lang=en --levels=3 # url, abbr, lang, levels
 
 vedabase-content:
-	node index content vedabase $1 # book_id
+	node index --action=content --book_id=$1 --last-chapter= # book_id

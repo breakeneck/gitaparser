@@ -6,21 +6,18 @@ const sanscreet = require("./sanscreet")
 
 
 module.exports = class Book {
-    constructor(dbName) {
-        const dbPath = './db/' + dbName;
-        // const makeReset = fs.existsSync(dbPath);
+    constructor() {
+        const dbPath = './db/general.db';
         this.db = new sqlite3(dbPath);
-        // if (makeReset) {
-        //     await this.reset();
-        // }
+        this.model = {}
     }
 
-    async reset() {
+    async initTables() {
         await this.db.exec(sql.CREATE_BOOK + sql.CREATE_CHAPTERS + sql.CREATE_CONTENT);
     }
 
-    load(id) {
-        this.model = this.db.prepare(sql.SELECT_BOOK).get({id: id});
+    async load(id) {
+        this.model = await this.db.prepare(sql.SELECT_BOOK).get({id: id});
     }
 
     async delete(id) {
