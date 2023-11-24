@@ -42,8 +42,12 @@ module.exports = class Book {
 
     async addContent(content) {
         content.book_id = this.model.id;
-        content.search_sanskrit = sanscreet.replaceToCyrillicChars(content.sanskrit, this.model.lang)
-            .replace(/  +/g, ' '); // replace multiple spaces to single
+        content.search_sanskrit = sanscreet.replaceToCyrillicChars(content.search_sanskrit, this.model.lang)
+            .replace(/<\/?[^>]+(>|$)/g, "")
+            .replace(/ґг/g, "г")
+            .replace(/ґ/g, "г")
+            .replace(/‘/g, "")
+            .replace(/(\s+)/g, ' '); // replace multiple spaces to single
         return await this.db.prepare(sql.INSERT_CONTENT).run(content);
     }
 

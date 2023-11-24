@@ -170,7 +170,16 @@ module.exports.replaceToCyrillicChars = function (input, lang) {
     if (typeof input  !== 'string') {
         return input;
     }
-    const mappings = (lang === 'ukr') ? UA_MAPPINGS : (lang === 'rus' ? RU_MAPPINGS : {})
+    let mappings = {};
+    if(lang === 'ua') {
+        mappings = UA_MAPPINGS;
+    }
+    else if(lang === 'ru') {
+        mappings = RU_MAPPINGS;
+    }
+    else {
+        mappings = EN_MAPPINGS;
+    }
     for (const [from, to] of Object.entries(mappings)) {
         input = input.replace(new RegExp('(' + from + ')', 'g'), to);
     }
