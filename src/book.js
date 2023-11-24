@@ -43,8 +43,8 @@ module.exports = class Book {
     async addContent(content) {
         content.book_id = this.model.id;
         content.search_sanskrit = sanscreet.replaceToCyrillicChars(content.search_sanskrit, this.model.lang)
-            .replace(/<\/?[^>]+(>|$)/g, "")
-            .replace(/ґг/g, "г")
+            // .replace(/<\/?[^>]+(>|$)/g, "") // replace tabs
+            .replace(/ґг/g, "г") // replace ґ
             .replace(/ґ/g, "г")
             .replace(/‘/g, "")
             .replace(/(\s+)/g, ' '); // replace multiple spaces to single

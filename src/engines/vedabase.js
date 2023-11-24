@@ -25,7 +25,7 @@ module.exports = class Vedabase extends Engine {
             path: chapter.path,
             chapter_id: chapter.id,
             sanskrit: $('.r-verse-text em em').html(),
-            search_sanskrit: $('.r-verse-text em em').text(),
+            search_sanskrit: $('.r-verse-text em').text(),
             wordly: $('.r-synonyms p').html(),
             txt: $('.r-translation').text(),
             comment: $('.r-paragraph').html()
