@@ -7,10 +7,10 @@ const parser = new Parser();
 
 ( async() => {
     switch (argv.action) {
-        case 'init': await initDb(); break;
+        case 'init': await parser.initDbTables(); break;
         case 'chapters': await parseChapters(); break;
         case 'content': await parseContent(); break
-        default: console.log('Supported actions are init, chapters, content');
+        default: console.log('Supported actions are init, chapters, content. Your action is ', argv.action);
     }
     player.play('end.mp3')
 })();
