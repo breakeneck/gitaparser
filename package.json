@@ -4,11 +4,15 @@
   "description": "Bhagavat Gita & Shrimad Bhagavatam in your pocket",
   "main": "index.js",
   "scripts": {
-    "reset": "node index.js init gitabase",
-    "parse_chapters": "node index.js chapters gitabase https://gitabase.com/ukr/BG bg ukr 2",
-    "parse_content": "node index.js content gitabase 1",
-    "parse_file": "node index.js file gitabase gitabase.json",
-    "delete_book": "node index.js delete vedabase 2"
+    "reset": "node index.js --action init",
+    "parse_chapters": "node index.js --action chapters --engine gitabase --url https://gitabase.com/ukr/BG --abbr bg --lang ukr --levels 2",
+    "parse_content": "node index.js --action content --book_id 1",
+    "parse_file": "node index.js --action file --engine gitabase gitabase.json",
+    "delete_book": "node index.js --action delete --book_id 2",
+    "retry": "node index.js --action retry --book_id 1",
+    "db:up": "docker-compose up -d",
+    "db:down": "docker-compose down",
+    "db:logs": "docker-compose logs -f mariadb"
   },
   "repository": {
     "type": "git",
@@ -24,12 +28,11 @@
   },
   "homepage": "https://github.com/breakeneck/gitaparser#readme",
   "dependencies": {
-    "better-sqlite3": "^9.1.0",
-    "play-sound": "^1.1.6"
-  },
-  "devDependencies": {
     "axios": "^1.6.1",
     "cheerio": "^1.0.0-rc.12",
-    "symbol": "^0.3.1"
+    "dotenv": "^16.3.1",
+    "minimist": "^1.2.8",
+    "mysql2": "^3.6.5",
+    "play-sound": "^1.1.6"
   }
 }

@@ -1,17 +1,121 @@
 # gitaparser
-Before start we should run
-```
-yarn global add node-gyp
-yarn upgrade
-```
-And then execute app with cmd params:
-```
-node index.js --action=init
-```
-Last working node version is 22.11.0
 
+Парсер сайтів gitabase та vedabase для Бгаґавад-Ґіти, Чайтанья-Чарітамріти та Шрімад Бгаґаватам.
 
-To be able to run proper nodejs version use as terminal shell path:
+## Встановлення
+
+### 1. Встановлення залежностей
+
+```bash
+yarn install
+# або
+npm install
 ```
-/bin/bash -lc "source ~/.bashrc; exec bash -i" 
+
+### 2. Запуск бази даних (MariaDB)
+
+```bash
+# Запуск контейнера з MariaDB
+yarn db:up
+# або
+npm run db:up
+
+# Зупинити контейнер
+yarn db:down
 ```
+
+### 3. Налаштування підключення до БД
+
+Скопіюйте `.env.example` в `.env` та налаштуйте параметри підключення:
+
+```bash
+cp .env.example .env
+```
+
+## Використання
+
+### Ініціалізація таблиць бази даних
+
+```bash
+node index.js --action init
+```
+
+### Парсинг структури книги (розділи)
+
+```bash
+node index.js --action chapters --engine gitabase --url https://gitabase.com/ukr/BG --abbr bg --lang ukr --levels 2
+```
+
+Параметри:
+- `--engine` - движок парсингу (`gitabase` або `vedabase`)
+- `--url` - URL сторінки книги
+- `--abbr` - абревіатура книги
+- `--lang` - мова (ukr, en, ru)
+- `--levels` - кількість рівнів вкладеності (2 або 3)
+
+### Парсинг контенту
+
+```bash
+# Парсити весь контент книги
+node index.js --action content --book_id 1
+
+# Продовжити з певного розділу
+node index.js --action content --book_id 1 --last_chapter_id 100
+
+# Парсити навіть якщо контент вже існує
+node index.js --action content --book_id 1 --skip_existing false
+```
+
+### Повтор спущених сторінок
+
+Якщо деякі сторінки не спарсилися через помилки, їх можна повторити:
+
+```bash
+node index.js --action retry --book_id 1
+```
+
+## Функціональність
+
+### Retry механізм
+- Автоматичний повтор запитів при помилках (до 5 спроб)
+- Exponential backoff (затримка збільшується з кожною спробою)
+- Логування всіх спроб
+
+### Прогрес індикатор
+- Візуальний прогрес бар: `[████████░░░░] 67% (134/200)`
+- Статистика в реальному часі
+- Підсумок після завершення
+
+### Пропущені сторінки
+- Автоматичне збереження інформації про сторінки з помилками
+- Можливість повторного парсингу пропущених сторінок
+- Збереження інформації про помилки
+
+### Перевірка існуючого контенту
+- Пропуск сторінок, які вже є в базі
+- Можливість примусового перепарсингу
+
+## Структура проекту
+
+```
+├── docker-compose.yml    # Конфігурація MariaDB контейнера
+├── .env.example          # Приклад конфігурації
+├── index.js              # Точка входу
+├── src/
+│   ├── database.js       # Модуль роботи з MySQL
+│   ├── sql.js            # SQL запити
+│   ├── parser.js         # Основний клас парсера
+│   ├── book.js           # Модель книги
+│   ├── engine.js         # Базовий клас движка
+│   ├── retry.js          # Retry механізм
+│   ├── engines/
+│   │   ├── gitabase.js   # Движок для gitabase.com
+│   │   └── vedabase.js   # Движок для vedabase.io
+│   └── ...
+```
+
+## Вимоги
+
+- Node.js 18+
+- Docker (для MariaDB)
+- Або власний MySQL/MariaDB сервер

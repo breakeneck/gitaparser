@@ -1,5 +1,6 @@
 const axios = require('axios');
-const cheerio = require('cheerio')
+const cheerio = require('cheerio');
+const { retry } = require('./retry');
 
 module.exports = class Engine {
     constructor(engineName) {
@@ -11,15 +12,32 @@ module.exports = class Engine {
     }
 
     getDbName() {
-        // return this.engineName + '.db';
         return 'general.db';
     }
 
     async getCheerio(url = '') {
         console.log(`Loading page ${url}`);
-
-        let page = await axios.get(url);
-        return cheerio.load(page.data);
+        
+        const $ = await retry(
+            async () => {
+                const page = await axios.get(url, {
+                    timeout: 30000,
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+                    }
+                });
+                return cheerio.load(page.data);
+            },
+            {
+                maxRetries: 5,
+                baseDelay: 2000,
+                onRetry: (attempt, error, delay) => {
+                    console.log(`Retry ${attempt}/5 for ${url} after ${Math.round(delay)}ms - Error: ${error.message}`);
+                }
+            }
+        );
+        
+        return $;
     }
 
     async generalParseChapters(url, selector) {
@@ -41,4 +59,4 @@ module.exports = class Engine {
     async parseChapters() {}
 
     async parseContentPage() {}
-}
+};
